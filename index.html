@@ -7,9 +7,11 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',sans-serif;background:#f0f2f5;color:#333;min-height:100vh}
-.header{background:linear-gradient(135deg,#e6007e,#6c3ce6,#00c3ff);padding:16px 30px;text-align:center}
-.header h1{font-size:24px;color:#fff;text-shadow:1px 1px 3px rgba(0,0,0,.3);letter-spacing:2px}
-.header p{color:rgba(255,255,255,.9);margin-top:2px;font-size:13px}
+.header{position:relative;padding:0;text-align:center;overflow:hidden;height:160px;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.header-bg{position:absolute;inset:0;background:url('Main Weapons/splatoon_weapons_collage.png') center/cover no-repeat;z-index:0}
+.header-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(230,0,126,.75),rgba(108,60,230,.7),rgba(0,195,255,.75));z-index:1}
+.header h1{position:relative;z-index:2;font-size:32px;color:#fff;text-shadow:2px 2px 6px rgba(0,0,0,.5),0 0 20px rgba(108,60,230,.4);letter-spacing:4px;font-weight:800}
+.header p{position:relative;z-index:2;color:rgba(255,255,255,.95);margin-top:4px;font-size:13px;text-shadow:1px 1px 3px rgba(0,0,0,.4)}
 
 /* Filter sections */
 .filter-section{background:#fff;padding:12px 24px;border-bottom:1px solid #e0e0e0}
@@ -82,8 +84,8 @@ tr:hover{background:#f5f0ff}
   .view-toggle button{flex:1}
 }
 @media(max-width:600px){
-  .header{padding:12px 16px}
-  .header h1{font-size:18px;letter-spacing:1px}
+  .header{height:100px}
+  .header h1{font-size:20px;letter-spacing:2px}
   .filter-section{padding:6px 12px}
   .filter-section-label{font-size:10px;margin-bottom:4px}
   .filter-buttons{gap:4px}
@@ -126,7 +128,9 @@ tr:hover{background:#f5f0ff}
 <body>
 
 <div class="header">
-  <h1>SPLATOON 3 WEAPON DASHBOARD</h1>
+  <div class="header-bg"></div>
+  <div class="header-overlay"></div>
+  <h1>Splatoon3 Weapons</h1>
   <p id="subtitle">全173ブキのデータを一覧・比較</p>
 </div>
 
