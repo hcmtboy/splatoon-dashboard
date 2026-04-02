@@ -74,7 +74,44 @@ tr:hover{background:#f5f0ff}
 .footer li{padding:2px 0}
 .footer li::before{content:"・";color:#aaa}
 .footer .copyright{margin-top:12px;padding-top:12px;border-top:1px solid #eee;color:#aaa;font-size:11px}
-@media(max-width:800px){.charts{grid-template-columns:1fr}.toolbar{flex-direction:column}.view-toggle{margin-left:0}}
+/* Mobile responsive */
+@media(max-width:800px){
+  .charts{grid-template-columns:1fr}
+  .toolbar{flex-direction:column}
+  .view-toggle{margin-left:0;width:100%;justify-content:stretch}
+  .view-toggle button{flex:1}
+}
+@media(max-width:600px){
+  .header{padding:12px 16px}
+  .header h1{font-size:18px;letter-spacing:1px}
+  .filter-section{padding:10px 12px}
+  .filter-btn{min-width:48px;padding:5px 6px}
+  .filter-btn img,.filter-btn .silhouette{width:24px;height:24px}
+  .filter-btn span{font-size:8px;max-width:52px}
+  .filter-btn-all{padding:5px 10px;font-size:10px;height:44px}
+  .toolbar{padding:8px 12px}
+  .toolbar input{max-width:100%;min-width:0}
+  .main{padding:8px 0}
+  .table-wrap{border-radius:0}
+  /* Card layout for mobile */
+  table,thead,tbody,th,td,tr{display:block}
+  thead{display:none}
+  tr{background:#fff;margin:8px 12px;border-radius:10px;padding:12px;box-shadow:0 1px 4px rgba(0,0,0,.08);border-bottom:none}
+  tr:hover{background:#faf8ff}
+  td{padding:4px 0;border-bottom:none;font-size:13px}
+  td:nth-child(1){float:right;margin-top:-4px}
+  td:nth-child(2){font-size:15px}
+  td:nth-child(5){display:inline-block;margin-right:12px}
+  td:nth-child(5)::before{content:'SP: ';color:#888;font-size:11px}
+  td:nth-child(7){display:inline-block;float:right;margin-top:-20px}
+  .weapon-icon{width:28px;height:28px}
+  .weapon-icon-sm{width:20px;height:20px}
+  .range-bar{min-width:60px}
+  .chart-card{margin:0 12px}
+  .charts{gap:12px}
+  .bar-label{width:120px;font-size:11px}
+  .footer{padding:16px 12px}
+}
 </style>
 </head>
 <body>
