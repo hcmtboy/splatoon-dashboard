@@ -126,15 +126,16 @@ tr:hover{background:#f5f0ff}
   td{display:block;padding:0;border-bottom:none;font-size:12px}
   td:nth-child(1){display:none!important} /* hide type badge */
   td:nth-child(2){flex:1;min-width:0;overflow:hidden} /* weapon name */
-  td:nth-child(2) .weapon-cell{gap:6px}
-  td:nth-child(2) strong{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  td:nth-child(2) .weapon-cell{gap:4px}
+  td:nth-child(2) strong{font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   td:nth-child(3) .sub-cell{gap:0} /* sub: icon only */
   td:nth-child(4) .special-cell{gap:0} /* special: icon only */
   td:nth-child(5){display:none!important} /* hide SP cost */
-  td:nth-child(6){flex:0 0 auto;display:flex;align-items:center;gap:4px} /* range */
-  td:nth-child(6) .range-bar{display:none} /* hide bar on mobile */
+  td:nth-child(6){flex:0 0 70px} /* range bar */
+  td:nth-child(6)>div{width:100%}
+  td:nth-child(6) .range-bar{display:block!important;min-width:0;width:100%}
   td:nth-child(6) .range-detail{display:none!important}
-  td:nth-child(6) .mobile-range{display:inline!important;font-size:11px;color:#555;white-space:nowrap}
+  td:nth-child(6) .mobile-range{display:none!important}
   td:nth-child(7){display:none!important} /* hide link */
   .weapon-icon{width:24px;height:24px}
   .weapon-icon-sm{width:18px;height:18px}
