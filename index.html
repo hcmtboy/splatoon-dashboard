@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Splatoon 3 Weapon Dashboard</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:#f0f2f5;color:#333;min-height:100vh}
+.header{background:linear-gradient(135deg,#e6007e,#6c3ce6,#00c3ff);padding:16px 30px;text-align:center}
+.header h1{font-size:24px;color:#fff;text-shadow:1px 1px 3px rgba(0,0,0,.3);letter-spacing:2px}
+.header p{color:rgba(255,255,255,.9);margin-top:2px;font-size:13px}
+
+/* Filter sections */
+.filter-section{background:#fff;padding:12px 24px;border-bottom:1px solid #e0e0e0}
+.filter-section-label{font-size:11px;color:#888;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.filter-buttons{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.filter-btn{display:flex;flex-direction:column;align-items:center;gap:3px;background:#f5f6f8;border:2px solid transparent;border-radius:10px;padding:6px 10px;cursor:pointer;transition:all .15s;min-width:56px}
+.filter-btn:hover{background:#e8eaef;border-color:#ccc}
+.filter-btn.active{border-color:#6c3ce6;background:#f0ecfa;box-shadow:0 0 8px rgba(108,60,230,.2)}
+.filter-btn img{width:28px;height:28px;object-fit:contain;filter:brightness(.78) saturate(1.3)}
+.filter-btn .silhouette{width:28px;height:28px;object-fit:contain;filter:brightness(0) opacity(.5)}
+.filter-btn.active .silhouette{filter:brightness(0) opacity(.8)}
+.filter-btn span{font-size:9px;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:64px;text-align:center}
+.filter-btn.active span{color:#333;font-weight:600}
+.filter-btn-all{display:flex;align-items:center;justify-content:center;background:#f5f6f8;border:2px solid transparent;border-radius:10px;padding:6px 14px;cursor:pointer;font-size:11px;color:#888;transition:all .15s;height:52px;font-weight:600}
+.filter-btn-all:hover{background:#e8eaef}
+.filter-btn-all.active{border-color:#6c3ce6;color:#6c3ce6;background:#f0ecfa}
+
+/* Search & view toggle bar */
+.toolbar{display:flex;gap:10px;padding:10px 24px;background:#fff;border-bottom:1px solid #e0e0e0;align-items:center;flex-wrap:wrap}
+.toolbar input{background:#f5f6f8;color:#333;border:1px solid #d0d0d0;border-radius:6px;padding:8px 12px;font-size:13px;outline:none;flex:1;min-width:150px;max-width:300px}
+.toolbar input:focus{border-color:#6c3ce6;box-shadow:0 0 0 2px rgba(108,60,230,.15)}
+.result-count{font-size:12px;color:#888}
+.view-toggle{display:flex;gap:4px;margin-left:auto}
+.view-toggle button{background:#f5f6f8;color:#666;border:1px solid #d0d0d0;border-radius:6px;padding:6px 14px;cursor:pointer;font-size:13px}
+.view-toggle button.active{background:#6c3ce6;color:#fff;border-color:#6c3ce6}
+
+.main{padding:16px 24px}
+/* Table */
+.table-wrap{overflow-x:auto;background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#f8f8fa;padding:10px 8px;text-align:left;position:sticky;top:0;cursor:pointer;user-select:none;white-space:nowrap;z-index:1;color:#555;font-weight:600;border-bottom:2px solid #e0e0e0}
+th:hover{background:#eef}
+th .sort-arrow{margin-left:4px;font-size:10px}
+td{padding:8px;border-bottom:1px solid #eee}
+tr:hover{background:#f5f0ff}
+.type-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;color:#fff}
+.weapon-icon{width:32px;height:32px;object-fit:contain;vertical-align:middle;filter:brightness(.78) saturate(1.3)}
+.weapon-icon-sm{width:24px;height:24px;object-fit:contain;vertical-align:middle;filter:brightness(.78) saturate(1.3)}
+.weapon-cell{display:flex;align-items:center;gap:8px}
+.sub-cell,.special-cell{display:flex;align-items:center;gap:6px}
+.range-bar{height:8px;border-radius:4px;background:#e8e8ec;position:relative;min-width:100px}
+.range-bar-fill{height:100%;border-radius:4px;position:absolute;left:0;top:0}
+.link-icon{color:#6c3ce6;text-decoration:none;font-size:16px}
+.link-icon:hover{color:#e6007e}
+/* Charts */
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.chart-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.chart-card h3{font-size:14px;color:#666;margin-bottom:12px;font-weight:600}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.bar-label{width:160px;font-size:12px;text-align:right;flex-shrink:0;display:flex;align-items:center;justify-content:flex-end;gap:6px;color:#555}
+.bar-label img{width:20px;height:20px;object-fit:contain;filter:brightness(.78) saturate(1.3)}
+.bar-label .silhouette{width:20px;height:20px;object-fit:contain;filter:brightness(0) opacity(.6)}
+.bar{height:22px;border-radius:4px;position:relative;transition:width .3s;min-width:24px}
+.bar span{position:absolute;right:6px;top:2px;font-size:11px;color:#fff;font-weight:600}
+.hidden{display:none}
+.no-results{text-align:center;padding:40px;color:#aaa;font-size:16px}
+.footer{background:#fff;border-top:1px solid #e0e0e0;padding:24px;margin-top:16px;font-size:12px;color:#888;line-height:1.8}
+.footer h4{font-size:13px;color:#555;margin-bottom:8px;font-weight:600}
+.footer a{color:#6c3ce6;text-decoration:none}
+.footer a:hover{text-decoration:underline}
+.footer ul{list-style:none;padding:0}
+.footer li{padding:2px 0}
+.footer li::before{content:"・";color:#aaa}
+.footer .copyright{margin-top:12px;padding-top:12px;border-top:1px solid #eee;color:#aaa;font-size:11px}
+@media(max-width:800px){.charts{grid-template-columns:1fr}.toolbar{flex-direction:column}.view-toggle{margin-left:0}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>SPLATOON 3 WEAPON DASHBOARD</h1>
+  <p id="subtitle">全173ブキのデータを一覧・比較</p>
+</div>
+
+<div class="filter-section">
+  <div class="filter-section-label">属性</div>
+  <div class="filter-buttons" id="typeFilters"></div>
+</div>
+<div class="filter-section">
+  <div class="filter-section-label">サブウェポン</div>
+  <div class="filter-buttons" id="subFilters"></div>
+</div>
+<div class="filter-section">
+  <div class="filter-section-label">スペシャルウェポン</div>
+  <div class="filter-buttons" id="specialFilters"></div>
+</div>
+
+<div class="toolbar">
+  <input type="text" id="searchInput" placeholder="ブキ名で検索...">
+  <span class="result-count" id="resultCount"></span>
+  <div class="view-toggle">
+    <button id="btnTable" class="active" onclick="setView('table')">一覧</button>
+    <button id="btnChart" onclick="setView('chart')">統計</button>
+  </div>
+</div>
+
+<div class="main">
+  <div id="tableView">
+    <div class="table-wrap">
+      <table>
+        <thead><tr id="thead"></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <div id="noResults" class="no-results hidden">該当するブキが見つかりません</div>
+  </div>
+  <div id="chartView" class="hidden"></div>
+</div>
+
+<footer class="footer">
+  <h4>ソース情報</h4>
+  <ul>
+    <li>武器データ（射程・サブ・スペシャル・必要SP）: <a href="https://wikiwiki.jp/splatoon3mix/" target="_blank">Splatoon3 検証Wiki (wikiwiki.jp/splatoon3mix)</a></li>
+    <li>武器アイコン: <a href="https://www.reddit.com/r/splatoon/comments/1fj89cj/all_splatoon_3_flat_weapon_icons_download_link/" target="_blank">All Splatoon 3 Flat Weapon Icons (Reddit r/splatoon)</a></li>
+    <li>ゲーム本体: <a href="https://www.nintendo.co.jp/switch/av5ja/" target="_blank">Splatoon 3</a> — Nintendo Switch / 任天堂</li>
+  </ul>
+  <div class="copyright">
+    Splatoon 3 and all related assets are trademarks of Nintendo. This dashboard is a fan-made tool for personal use.
+  </div>
+</footer>
+
+<script>
+let DATA=[], filtered=[], sortCol='name', sortAsc=true, currentView='table', ICONS={};
+let activeType='', activeSub='', activeSpecial='';
+
+const TYPE_COLORS={シューター:'#e6007e',ローラー:'#ff6b35',チャージャー:'#0099dd',スロッシャー:'#5aad3c',スピナー:'#d4a017',マニューバー:'#9b59b6',シェルター:'#e74c3c',ブラスター:'#1abc9c',フデ:'#e056a0',ストリンガー:'#3485d6',ワイパー:'#7c3aed'};
+
+const TYPE_REPR={
+  シューター:'Splattershot',ローラー:'Splat Roller',チャージャー:'_Splat Charger',
+  スロッシャー:'Slosher',スピナー:'Heavy Splatling',マニューバー:'Splat Dualies',
+  シェルター:'Splat Brella',ブラスター:'Blaster',フデ:'Inkbrush',
+  ストリンガー:'Tri-Stringer',ワイパー:'Splatana Wiper'
+};
+
+function mainIcon(name){const en=ICONS.main?.[name];return en?`<img class="weapon-icon" src="Main Weapons/${encodeURIComponent(en)}.png" alt="${name}" onerror="this.style.display='none'">`:''}
+function subIcon(name){const en=ICONS.sub?.[name];return en?`<img class="weapon-icon-sm" src="Sub Weapons/${encodeURIComponent(en)}.png" alt="${name}" onerror="this.style.display='none'">`:''}
+function spIcon(name){const en=ICONS.special?.[name];return en?`<img class="weapon-icon-sm" src="Special Weapons/${encodeURIComponent(en)}.png" alt="${name}" onerror="this.style.display='none'">`:''}
+function typeIcon(type){const en=TYPE_REPR[type];return en?`<img class="silhouette" src="Main Weapons/${encodeURIComponent(en)}.png" alt="${type}" onerror="this.style.display='none'">`:''}
+
+const COLS=[
+  {key:'type',label:'属性',w:90},
+  {key:'name',label:'ブキ名',w:220},
+  {key:'sub',label:'サブ',w:180},
+  {key:'special',label:'スペシャル',w:200},
+  {key:'sp_cost',label:'SP必要P',w:80},
+  {key:'range',label:'射程 (m)',w:200},
+  {key:'url',label:'詳細',w:50}
+];
+
+async function init(){
+  const [res,iconRes]=await Promise.all([fetch('splatoon_data.json'),fetch('weapon_icons.json')]);
+  DATA=await res.json();
+  ICONS=await iconRes.json();
+  DATA.forEach(d=>{d.range_max_m=+d.range_max_m;d.range_min_m=+d.range_min_m;d.sp_cost=+d.sp_cost});
+  buildFilterButtons();
+  applyFilters();
+}
+
+function buildFilterButtons(){
+  const types=[...new Set(DATA.map(d=>d.type))].sort();
+  const subs=[...new Set(DATA.map(d=>d.sub))].sort();
+  const specials=[...new Set(DATA.map(d=>d.special))].sort();
+
+  const tf=document.getElementById('typeFilters');
+  tf.innerHTML=`<div class="filter-btn-all active" onclick="toggleFilter('type','',this)">ALL</div>`;
+  types.forEach(t=>{
+    const btn=document.createElement('div');
+    btn.className='filter-btn';
+    btn.dataset.type=t;
+    btn.onclick=()=>toggleFilter('type',t,btn);
+    btn.innerHTML=`${typeIcon(t)}<span>${t}</span>`;
+    tf.appendChild(btn);
+  });
+
+  const sf=document.getElementById('subFilters');
+  sf.innerHTML=`<div class="filter-btn-all active" onclick="toggleFilter('sub','',this)">ALL</div>`;
+  subs.forEach(s=>{
+    const btn=document.createElement('div');
+    btn.className='filter-btn';
+    btn.onclick=()=>toggleFilter('sub',s,btn);
+    const en=ICONS.sub?.[s];
+    btn.innerHTML=`${en?`<img src="Sub Weapons/${encodeURIComponent(en)}.png" alt="${s}">`:''}<span>${s}</span>`;
+    sf.appendChild(btn);
+  });
+
+  const spf=document.getElementById('specialFilters');
+  spf.innerHTML=`<div class="filter-btn-all active" onclick="toggleFilter('special','',this)">ALL</div>`;
+  specials.forEach(s=>{
+    const btn=document.createElement('div');
+    btn.className='filter-btn';
+    btn.onclick=()=>toggleFilter('special',s,btn);
+    const en=ICONS.special?.[s];
+    btn.innerHTML=`${en?`<img src="Special Weapons/${encodeURIComponent(en)}.png" alt="${s}">`:''}<span>${s}</span>`;
+    spf.appendChild(btn);
+  });
+}
+
+function toggleFilter(kind,val,btn){
+  const container=btn.parentElement;
+  container.querySelectorAll('.filter-btn,.filter-btn-all').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(kind==='type'){activeType=val;updateTypeBorderColors()}
+  else if(kind==='sub')activeSub=val;
+  else activeSpecial=val;
+  applyFilters();
+}
+
+function updateTypeBorderColors(){
+  document.querySelectorAll('#typeFilters .filter-btn').forEach(btn=>{
+    const t=btn.dataset.type;
+    if(btn.classList.contains('active')){
+      btn.style.borderColor=TYPE_COLORS[t]||'#6c3ce6';
+      btn.style.boxShadow=`0 0 8px ${TYPE_COLORS[t]||'#6c3ce6'}30`;
+      btn.style.background=`${TYPE_COLORS[t]||'#6c3ce6'}12`;
+    } else {
+      btn.style.borderColor='transparent';
+      btn.style.boxShadow='none';
+      btn.style.background='#f5f6f8';
+    }
+  });
+}
+
+function applyFilters(){
+  const q=searchInput.value.toLowerCase();
+  filtered=DATA.filter(d=>{
+    if(activeType&&d.type!==activeType)return false;
+    if(activeSub&&d.sub!==activeSub)return false;
+    if(activeSpecial&&d.special!==activeSpecial)return false;
+    if(q&&!d.name.toLowerCase().includes(q))return false;
+    return true;
+  });
+  resultCount.textContent=`${filtered.length} / ${DATA.length} ブキ`;
+  subtitle.textContent=`${filtered.length}件表示中 / 全${DATA.length}ブキ`;
+  if(currentView==='table')renderTable();else renderCharts();
+}
+
+function renderTable(){
+  const maxRange=Math.max(...DATA.map(d=>d.range_max_m));
+  thead.innerHTML='';
+  COLS.forEach(c=>{
+    const th=document.createElement('th');
+    th.innerHTML=c.key==='url'?c.label:`${c.label}<span class="sort-arrow">${sortCol===c.key?(sortAsc?'▲':'▼'):''}</span>`;
+    th.style.width=c.w+'px';
+    if(c.key!=='url'&&c.key!=='range')th.onclick=()=>{if(sortCol===c.key)sortAsc=!sortAsc;else{sortCol=c.key;sortAsc=true}applySort();renderTable()};
+    if(c.key==='range')th.onclick=()=>{if(sortCol==='range')sortAsc=!sortAsc;else{sortCol='range';sortAsc=true}applySort();renderTable()};
+    thead.appendChild(th);
+  });
+  applySort();
+  tbody.innerHTML='';
+  noResults.classList.toggle('hidden',filtered.length>0);
+  filtered.forEach(d=>{
+    const tr=document.createElement('tr');
+    const pct2=(d.range_max_m/maxRange*100);
+    const rangeText=d.range_min_m===d.range_max_m?`${d.range_min_m}m`:`${d.range_min_m}〜${d.range_max_m}m`;
+    const color=TYPE_COLORS[d.type]||'#666';
+    tr.innerHTML=`
+      <td><span class="type-badge" style="background:${color}">${d.type}</span></td>
+      <td><div class="weapon-cell">${mainIcon(d.name)}<strong>${d.name}</strong></div></td>
+      <td><div class="sub-cell">${subIcon(d.sub)}${d.sub}</div></td>
+      <td><div class="special-cell">${spIcon(d.special)}${d.special}</div></td>
+      <td style="text-align:center">${d.sp_cost}</td>
+      <td><div style="display:flex;align-items:center;gap:8px"><div class="range-bar"><div class="range-bar-fill" style="width:${pct2}%;background:linear-gradient(90deg,${color}66,${color})"></div></div><span style="font-size:12px;white-space:nowrap">${rangeText}</span></div></td>
+      <td>${d.url?`<a href="${d.url}" target="_blank" class="link-icon">🔗</a>`:''}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function applySort(){
+  filtered.sort((a,b)=>{
+    let va,vb;
+    if(sortCol==='range'){va=a.range_max_m;vb=b.range_max_m}
+    else if(sortCol==='sp_cost'){va=a.sp_cost;vb=b.sp_cost}
+    else{va=a[sortCol];vb=b[sortCol]}
+    if(typeof va==='number')return sortAsc?va-vb:vb-va;
+    return sortAsc?String(va).localeCompare(String(vb)):String(vb).localeCompare(String(va));
+  });
+}
+
+function renderCharts(){
+  const chartView=document.getElementById('chartView');
+  chartView.innerHTML='<div class="charts" id="chartsGrid"></div>';
+  const grid=document.getElementById('chartsGrid');
+  const typeCounts={};filtered.forEach(d=>typeCounts[d.type]=(typeCounts[d.type]||0)+1);
+  grid.appendChild(makeBarChart('属性別ブキ数',typeCounts,d=>TYPE_COLORS[d]||'#666','type'));
+  const subCounts={};filtered.forEach(d=>subCounts[d.sub]=(subCounts[d.sub]||0)+1);
+  grid.appendChild(makeBarChart('サブウェポン分布',subCounts,()=>'#0099dd','sub'));
+  const spCounts={};filtered.forEach(d=>spCounts[d.special]=(spCounts[d.special]||0)+1);
+  grid.appendChild(makeBarChart('スペシャルウェポン分布',spCounts,()=>'#6c3ce6','special'));
+  const rangeBuckets={'〜10m':0,'10〜15m':0,'15〜20m':0,'20〜25m':0,'25m〜':0};
+  filtered.forEach(d=>{const r=d.range_max_m;if(r<=10)rangeBuckets['〜10m']++;else if(r<=15)rangeBuckets['10〜15m']++;else if(r<=20)rangeBuckets['15〜20m']++;else if(r<=25)rangeBuckets['20〜25m']++;else rangeBuckets['25m〜']++});
+  grid.appendChild(makeBarChart('射程分布',rangeBuckets,()=>'#e6007e','none'));
+}
+
+function chartIcon(key,kind){
+  if(kind==='type'){const en=TYPE_REPR[key];return en?`<img class="silhouette" src="Main Weapons/${encodeURIComponent(en)}.png" onerror="this.style.display='none'">`:''}
+  if(kind==='sub'){const en=ICONS.sub?.[key];return en?`<img src="Sub Weapons/${encodeURIComponent(en)}.png" onerror="this.style.display='none'">`:''}
+  if(kind==='special'){const en=ICONS.special?.[key];return en?`<img src="Special Weapons/${encodeURIComponent(en)}.png" onerror="this.style.display='none'">`:''}
+  return '';
+}
+
+function makeBarChart(title,data,colorFn,kind){
+  const card=document.createElement('div');card.className='chart-card';
+  const entries=Object.entries(data).sort((a,b)=>b[1]-a[1]);
+  const max=Math.max(...entries.map(e=>e[1]));
+  let html=`<h3>${title}</h3>`;
+  entries.forEach(([k,v])=>{
+    const pct=max?(v/max*100):0;
+    html+=`<div class="bar-row"><div class="bar-label">${chartIcon(k,kind)}<span title="${k}">${k}</span></div><div class="bar" style="width:${pct}%;background:${colorFn(k)}"><span>${v}</span></div></div>`;
+  });
+  card.innerHTML=html;
+  return card;
+}
+
+function setView(v){
+  currentView=v;
+  btnTable.classList.toggle('active',v==='table');
+  btnChart.classList.toggle('active',v==='chart');
+  document.getElementById('tableView').classList.toggle('hidden',v!=='table');
+  document.getElementById('chartView').classList.toggle('hidden',v!=='chart');
+  if(v==='table')renderTable();else renderCharts();
+}
+
+searchInput.oninput=applyFilters;
+init();
+</script>
+</body>
+</html>
