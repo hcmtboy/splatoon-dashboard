@@ -29,9 +29,10 @@ body{font-family:'Segoe UI',sans-serif;background:#f0f2f5;color:#333;min-height:
 .filter-btn-all:hover{background:#e8eaef}
 .filter-btn-all.active{border-color:#6c3ce6;color:#6c3ce6;background:#f0ecfa}
 
-/* Sub/Special icon color: #413CB9 via SVG filter */
-.weapon-icon-sm{width:24px;height:24px;object-fit:contain;vertical-align:middle;filter:url(#icon-blue)}
-.filter-btn img.sub-sp-icon{filter:url(#icon-blue)}
+/* Sub/Special icons: gray silhouette */
+.weapon-icon-sm{width:24px;height:24px;object-fit:contain;vertical-align:middle;filter:brightness(0) opacity(.5)}
+.filter-btn img.sub-sp-icon{filter:brightness(0) opacity(.5)}
+.filter-btn.active img.sub-sp-icon{filter:brightness(0) opacity(.8)}
 
 /* Search & view toggle bar */
 .toolbar{display:flex;gap:10px;padding:10px 24px;background:#fff;border-bottom:1px solid #e0e0e0;align-items:center;flex-wrap:wrap}
@@ -71,7 +72,7 @@ tr:hover{background:#f5f0ff}
 .chart-card h3{font-size:14px;color:#666;margin-bottom:12px;font-weight:600}
 .bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
 .bar-label{width:160px;font-size:12px;text-align:right;flex-shrink:0;display:flex;align-items:center;justify-content:flex-end;gap:6px;color:#555}
-.bar-label img{width:20px;height:20px;object-fit:contain;filter:url(#icon-blue)}
+.bar-label img{width:20px;height:20px;object-fit:contain;filter:brightness(0) opacity(.6)}
 .bar-label .silhouette{width:20px;height:20px;object-fit:contain;filter:brightness(0) opacity(.6)}
 .bar{height:22px;border-radius:4px;position:relative;transition:width .3s;min-width:24px}
 .bar span{position:absolute;right:6px;top:2px;font-size:11px;color:#fff;font-weight:600}
