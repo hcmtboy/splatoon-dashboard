@@ -84,11 +84,13 @@ tr:hover{background:#f5f0ff}
 @media(max-width:600px){
   .header{padding:12px 16px}
   .header h1{font-size:18px;letter-spacing:1px}
-  .filter-section{padding:10px 12px}
-  .filter-btn{min-width:48px;padding:5px 6px}
-  .filter-btn img,.filter-btn .silhouette{width:24px;height:24px}
-  .filter-btn span{font-size:8px;max-width:52px}
-  .filter-btn-all{padding:5px 10px;font-size:10px;height:44px}
+  .filter-section{padding:6px 12px}
+  .filter-section-label{font-size:10px;margin-bottom:4px}
+  .filter-buttons{gap:4px}
+  .filter-btn{min-width:36px;padding:5px;gap:0}
+  .filter-btn img,.filter-btn .silhouette{width:22px;height:22px}
+  .filter-btn span{display:none}
+  .filter-btn-all{padding:4px 8px;font-size:9px;height:32px}
   .toolbar{padding:8px 12px}
   .toolbar input{max-width:100%;min-width:0}
   .main{padding:4px 0}
@@ -223,6 +225,7 @@ function buildFilterButtons(){
     const btn=document.createElement('div');
     btn.className='filter-btn';
     btn.dataset.type=t;
+    btn.title=t;
     btn.onclick=()=>toggleFilter('type',t,btn);
     btn.innerHTML=`${typeIcon(t)}<span>${t}</span>`;
     tf.appendChild(btn);
@@ -233,6 +236,7 @@ function buildFilterButtons(){
   subs.forEach(s=>{
     const btn=document.createElement('div');
     btn.className='filter-btn';
+    btn.title=s;
     btn.onclick=()=>toggleFilter('sub',s,btn);
     const en=ICONS.sub?.[s];
     btn.innerHTML=`${en?`<img src="Sub Weapons/${encodeURIComponent(en)}.png" alt="${s}">`:''}<span>${s}</span>`;
@@ -244,6 +248,7 @@ function buildFilterButtons(){
   specials.forEach(s=>{
     const btn=document.createElement('div');
     btn.className='filter-btn';
+    btn.title=s;
     btn.onclick=()=>toggleFilter('special',s,btn);
     const en=ICONS.special?.[s];
     btn.innerHTML=`${en?`<img src="Special Weapons/${encodeURIComponent(en)}.png" alt="${s}">`:''}<span>${s}</span>`;
