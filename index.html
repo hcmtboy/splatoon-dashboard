@@ -91,22 +91,29 @@ tr:hover{background:#f5f0ff}
   .filter-btn-all{padding:5px 10px;font-size:10px;height:44px}
   .toolbar{padding:8px 12px}
   .toolbar input{max-width:100%;min-width:0}
-  .main{padding:8px 0}
+  .main{padding:4px 0}
   .table-wrap{border-radius:0}
-  /* Card layout for mobile */
-  table,thead,tbody,th,td,tr{display:block}
+  /* Compact list layout for mobile */
+  table{display:block}
   thead{display:none}
-  tr{background:#fff;margin:8px 12px;border-radius:10px;padding:12px;box-shadow:0 1px 4px rgba(0,0,0,.08);border-bottom:none}
-  tr:hover{background:#faf8ff}
-  td{padding:4px 0;border-bottom:none;font-size:13px}
-  td:nth-child(1){float:right;margin-top:-4px}
-  td:nth-child(2){font-size:15px}
-  td:nth-child(5){display:inline-block;margin-right:12px}
-  td:nth-child(5)::before{content:'SP: ';color:#888;font-size:11px}
-  td:nth-child(7){display:inline-block;float:right;margin-top:-20px}
-  .weapon-icon{width:28px;height:28px}
-  .weapon-icon-sm{width:20px;height:20px}
-  .range-bar{min-width:60px}
+  tbody{display:block}
+  tr{display:flex!important;align-items:center;gap:6px;padding:6px 12px;border-bottom:1px solid #f0f0f0}
+  tr:hover{background:#f5f0ff}
+  td{display:block;padding:0;border-bottom:none;font-size:12px}
+  td:nth-child(1){display:none!important} /* hide type badge */
+  td:nth-child(2){flex:1;min-width:0;overflow:hidden} /* weapon name */
+  td:nth-child(2) .weapon-cell{gap:6px}
+  td:nth-child(2) strong{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  td:nth-child(3) .sub-cell{gap:0} /* sub: icon only */
+  td:nth-child(4) .special-cell{gap:0} /* special: icon only */
+  td:nth-child(5){font-size:11px;color:#888;min-width:28px;text-align:center} /* SP cost */
+  td:nth-child(6){flex:0 0 60px} /* range bar */
+  td:nth-child(6) span{display:none!important} /* hide range text */
+  td:nth-child(7){display:none!important} /* hide link */
+  .weapon-icon{width:24px;height:24px}
+  .weapon-icon-sm{width:18px;height:18px}
+  .range-bar{min-width:50px}
+  .mobile-hide-text{display:none!important}
   .chart-card{margin:0 12px}
   .charts{gap:12px}
   .bar-label{width:120px;font-size:11px}
@@ -305,8 +312,8 @@ function renderTable(){
     tr.innerHTML=`
       <td><span class="type-badge" style="background:${color}">${d.type}</span></td>
       <td><div class="weapon-cell">${mainIcon(d.name)}<strong>${d.name}</strong></div></td>
-      <td><div class="sub-cell">${subIcon(d.sub)}${d.sub}</div></td>
-      <td><div class="special-cell">${spIcon(d.special)}${d.special}</div></td>
+      <td><div class="sub-cell">${subIcon(d.sub)}<span class="mobile-hide-text">${d.sub}</span></div></td>
+      <td><div class="special-cell">${spIcon(d.special)}<span class="mobile-hide-text">${d.special}</span></div></td>
       <td style="text-align:center">${d.sp_cost}</td>
       <td><div style="display:flex;align-items:center;gap:8px"><div class="range-bar"><div class="range-bar-fill" style="width:${pct2}%;background:linear-gradient(90deg,${color}66,${color})"></div></div><span style="font-size:12px;white-space:nowrap">${rangeText}</span></div></td>
       <td>${d.url?`<a href="${d.url}" target="_blank" class="link-icon">🔗</a>`:''}</td>`;
