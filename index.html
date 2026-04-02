@@ -8,7 +8,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',sans-serif;background:#f0f2f5;color:#333;min-height:100vh}
 .header{position:relative;padding:0;text-align:center;overflow:hidden;height:160px;display:flex;align-items:center;justify-content:center;flex-direction:column}
-.header-bg{position:absolute;inset:0;background:url('Main Weapons/splatoon_weapons_collage.png') center/cover no-repeat;z-index:0}
+.header-bg{position:absolute;inset:0;background:url('Main Weapons/splatoon_weapons_pc.png') center/cover no-repeat;z-index:0}
 .header-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(230,0,126,.75),rgba(108,60,230,.7),rgba(0,195,255,.75));z-index:1}
 .header h1{position:relative;z-index:2;font-size:32px;color:#fff;text-shadow:2px 2px 6px rgba(0,0,0,.5),0 0 20px rgba(108,60,230,.4);letter-spacing:4px;font-weight:800}
 .header p{position:relative;z-index:2;color:rgba(255,255,255,.95);margin-top:4px;font-size:13px;text-shadow:1px 1px 3px rgba(0,0,0,.4)}
@@ -28,6 +28,10 @@ body{font-family:'Segoe UI',sans-serif;background:#f0f2f5;color:#333;min-height:
 .filter-btn-all{display:flex;align-items:center;justify-content:center;background:#f5f6f8;border:2px solid transparent;border-radius:10px;padding:6px 14px;cursor:pointer;font-size:11px;color:#888;transition:all .15s;height:52px;font-weight:600}
 .filter-btn-all:hover{background:#e8eaef}
 .filter-btn-all.active{border-color:#6c3ce6;color:#6c3ce6;background:#f0ecfa}
+
+/* Sub/Special icon color: #413CB9 */
+.weapon-icon-sm{width:24px;height:24px;object-fit:contain;vertical-align:middle;filter:sepia(1) saturate(5) hue-rotate(220deg) brightness(.45)}
+.filter-btn img.sub-sp-icon{filter:sepia(1) saturate(5) hue-rotate(220deg) brightness(.45)}
 
 /* Search & view toggle bar */
 .toolbar{display:flex;gap:10px;padding:10px 24px;background:#fff;border-bottom:1px solid #e0e0e0;align-items:center;flex-wrap:wrap}
@@ -49,20 +53,25 @@ td{padding:8px;border-bottom:1px solid #eee}
 tr:hover{background:#f5f0ff}
 .type-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;color:#fff}
 .weapon-icon{width:32px;height:32px;object-fit:contain;vertical-align:middle;filter:brightness(.78) saturate(1.3)}
-.weapon-icon-sm{width:24px;height:24px;object-fit:contain;vertical-align:middle;filter:brightness(.78) saturate(1.3)}
 .weapon-cell{display:flex;align-items:center;gap:8px}
 .sub-cell,.special-cell{display:flex;align-items:center;gap:6px}
 .range-bar{height:8px;border-radius:4px;background:#e8e8ec;position:relative;min-width:100px}
 .range-bar-fill{height:100%;border-radius:4px;position:absolute;left:0;top:0}
+.range-detail{font-size:11px;color:#888;white-space:nowrap}
 .link-icon{color:#6c3ce6;text-decoration:none;font-size:16px}
 .link-icon:hover{color:#e6007e}
+
+/* Range basis hint */
+.range-hint{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#e0dff5;color:#413CB9;font-size:10px;font-weight:700;cursor:help;margin-left:4px;position:relative}
+.range-hint:hover::after{content:attr(data-tip);position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:4px 8px;border-radius:4px;font-size:11px;white-space:nowrap;z-index:10;font-weight:400}
+
 /* Charts */
 .charts{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .chart-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
 .chart-card h3{font-size:14px;color:#666;margin-bottom:12px;font-weight:600}
 .bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
 .bar-label{width:160px;font-size:12px;text-align:right;flex-shrink:0;display:flex;align-items:center;justify-content:flex-end;gap:6px;color:#555}
-.bar-label img{width:20px;height:20px;object-fit:contain;filter:brightness(.78) saturate(1.3)}
+.bar-label img{width:20px;height:20px;object-fit:contain;filter:sepia(1) saturate(5) hue-rotate(220deg) brightness(.45)}
 .bar-label .silhouette{width:20px;height:20px;object-fit:contain;filter:brightness(0) opacity(.6)}
 .bar{height:22px;border-radius:4px;position:relative;transition:width .3s;min-width:24px}
 .bar span{position:absolute;right:6px;top:2px;font-size:11px;color:#fff;font-weight:600}
@@ -74,8 +83,15 @@ tr:hover{background:#f5f0ff}
 .footer a:hover{text-decoration:underline}
 .footer ul{list-style:none;padding:0}
 .footer li{padding:2px 0}
-.footer li::before{content:"・";color:#aaa}
+.footer li::before{content:"\30FB";color:#aaa}
 .footer .copyright{margin-top:12px;padding-top:12px;border-top:1px solid #eee;color:#aaa;font-size:11px}
+
+/* Mobile sort controls */
+.mobile-sort{display:none}
+.mobile-sort select{background:#f5f6f8;border:1px solid #d0d0d0;border-radius:6px;padding:6px 10px;font-size:12px;color:#555;outline:none;flex:1}
+.mobile-sort select:focus{border-color:#6c3ce6}
+.mobile-sort button{background:#f5f6f8;border:1px solid #d0d0d0;border-radius:6px;padding:6px 10px;font-size:14px;cursor:pointer;color:#555;min-width:36px}
+
 /* Mobile responsive */
 @media(max-width:800px){
   .charts{grid-template-columns:1fr}
@@ -85,6 +101,7 @@ tr:hover{background:#f5f0ff}
 }
 @media(max-width:600px){
   .header{height:100px}
+  .header-bg{background-image:url('Main Weapons/splatoon_weapons_sp.png')!important}
   .header h1{font-size:20px;letter-spacing:2px}
   .filter-section{padding:6px 12px}
   .filter-section-label{font-size:10px;margin-bottom:4px}
@@ -95,6 +112,7 @@ tr:hover{background:#f5f0ff}
   .filter-btn-all{padding:4px 8px;font-size:9px;height:32px}
   .toolbar{padding:8px 12px}
   .toolbar input{max-width:100%;min-width:0}
+  .mobile-sort{display:flex;gap:6px;width:100%;align-items:center}
   .main{padding:4px 0}
   .table-wrap{border-radius:0}
   /* Compact list layout for mobile */
@@ -110,14 +128,17 @@ tr:hover{background:#f5f0ff}
   td:nth-child(2) strong{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   td:nth-child(3) .sub-cell{gap:0} /* sub: icon only */
   td:nth-child(4) .special-cell{gap:0} /* special: icon only */
-  td:nth-child(5){font-size:11px;color:#888;min-width:28px;text-align:center} /* SP cost */
-  td:nth-child(6){flex:0 0 60px} /* range bar */
-  td:nth-child(6) span{display:none!important} /* hide range text */
+  td:nth-child(5){display:none!important} /* hide SP cost */
+  td:nth-child(6){flex:0 0 auto;display:flex;align-items:center;gap:4px} /* range */
+  td:nth-child(6) .range-bar{display:none} /* hide bar on mobile */
+  td:nth-child(6) .range-detail{display:none!important}
+  td:nth-child(6) .mobile-range{display:inline!important;font-size:11px;color:#555;white-space:nowrap}
   td:nth-child(7){display:none!important} /* hide link */
   .weapon-icon{width:24px;height:24px}
   .weapon-icon-sm{width:18px;height:18px}
   .range-bar{min-width:50px}
   .mobile-hide-text{display:none!important}
+  .range-hint{display:none}
   .chart-card{margin:0 12px}
   .charts{gap:12px}
   .bar-label{width:120px;font-size:11px}
@@ -150,6 +171,17 @@ tr:hover{background:#f5f0ff}
 <div class="toolbar">
   <input type="text" id="searchInput" placeholder="ブキ名で検索...">
   <span class="result-count" id="resultCount"></span>
+  <div class="mobile-sort">
+    <select id="mobileSortSelect">
+      <option value="name">名前順</option>
+      <option value="type">属性順</option>
+      <option value="sub">サブ順</option>
+      <option value="special">スペシャル順</option>
+      <option value="sp_cost">SP順</option>
+      <option value="range">射程順</option>
+    </select>
+    <button id="mobileSortDir" onclick="toggleMobileSortDir()">▲</button>
+  </div>
   <div class="view-toggle">
     <button id="btnTable" class="active" onclick="setView('table')">一覧</button>
     <button id="btnChart" onclick="setView('chart')">統計</button>
@@ -201,11 +233,11 @@ function typeIcon(type){const en=TYPE_REPR[type];return en?`<img class="silhouet
 
 const COLS=[
   {key:'type',label:'属性',w:90},
-  {key:'name',label:'ブキ名',w:220},
-  {key:'sub',label:'サブ',w:180},
-  {key:'special',label:'スペシャル',w:200},
-  {key:'sp_cost',label:'SP必要P',w:80},
-  {key:'range',label:'射程 (m)',w:200},
+  {key:'name',label:'ブキ名',w:200},
+  {key:'sub',label:'サブ',w:170},
+  {key:'special',label:'スペシャル',w:190},
+  {key:'sp_cost',label:'SP必要P',w:70},
+  {key:'range',label:'射程',w:280},
   {key:'url',label:'詳細',w:50}
 ];
 
@@ -213,9 +245,11 @@ async function init(){
   const [res,iconRes]=await Promise.all([fetch('splatoon_data.json'),fetch('weapon_icons.json')]);
   DATA=await res.json();
   ICONS=await iconRes.json();
-  DATA.forEach(d=>{d.range_max_m=+d.range_max_m;d.range_min_m=+d.range_min_m;d.sp_cost=+d.sp_cost});
+  DATA.forEach(d=>{d.range_max_m=+d.range_max_m;d.range_min_m=+d.range_min_m;d.sp_cost=+d.sp_cost;d.range_min_line=+d.range_min_line;d.range_max_line=+d.range_max_line});
   buildFilterButtons();
   applyFilters();
+  // Mobile sort
+  document.getElementById('mobileSortSelect').onchange=function(){sortCol=this.value;applySort();renderTable()};
 }
 
 function buildFilterButtons(){
@@ -243,7 +277,7 @@ function buildFilterButtons(){
     btn.title=s;
     btn.onclick=()=>toggleFilter('sub',s,btn);
     const en=ICONS.sub?.[s];
-    btn.innerHTML=`${en?`<img src="Sub Weapons/${encodeURIComponent(en)}.png" alt="${s}">`:''}<span>${s}</span>`;
+    btn.innerHTML=`${en?`<img class="sub-sp-icon" src="Sub Weapons/${encodeURIComponent(en)}.png" alt="${s}">`:''}<span>${s}</span>`;
     sf.appendChild(btn);
   });
 
@@ -255,7 +289,7 @@ function buildFilterButtons(){
     btn.title=s;
     btn.onclick=()=>toggleFilter('special',s,btn);
     const en=ICONS.special?.[s];
-    btn.innerHTML=`${en?`<img src="Special Weapons/${encodeURIComponent(en)}.png" alt="${s}">`:''}<span>${s}</span>`;
+    btn.innerHTML=`${en?`<img class="sub-sp-icon" src="Special Weapons/${encodeURIComponent(en)}.png" alt="${s}">`:''}<span>${s}</span>`;
     spf.appendChild(btn);
   });
 }
@@ -283,6 +317,12 @@ function updateTypeBorderColors(){
       btn.style.background='#f5f6f8';
     }
   });
+}
+
+function toggleMobileSortDir(){
+  sortAsc=!sortAsc;
+  document.getElementById('mobileSortDir').textContent=sortAsc?'▲':'▼';
+  applySort();renderTable();
 }
 
 function applyFilters(){
@@ -316,16 +356,18 @@ function renderTable(){
   filtered.forEach(d=>{
     const tr=document.createElement('tr');
     const pct2=(d.range_max_m/maxRange*100);
-    const rangeText=d.range_min_m===d.range_max_m?`${d.range_min_m}m`:`${d.range_min_m}〜${d.range_max_m}m`;
+    const rangeTextM=d.range_min_m===d.range_max_m?`${d.range_min_m}m`:`${d.range_min_m}\u301C${d.range_max_m}m`;
+    const rangeTextL=d.range_min_line===d.range_max_line?`${d.range_min_line}`:`${d.range_min_line}\u301C${d.range_max_line}`;
     const color=TYPE_COLORS[d.type]||'#666';
+    const basisHint=d.range_basis?`<span class="range-hint" data-tip="${d.range_basis}">?</span>`:'';
     tr.innerHTML=`
       <td><span class="type-badge" style="background:${color}">${d.type}</span></td>
       <td><div class="weapon-cell">${mainIcon(d.name)}<strong>${d.name}</strong></div></td>
       <td><div class="sub-cell">${subIcon(d.sub)}<span class="mobile-hide-text">${d.sub}</span></div></td>
       <td><div class="special-cell">${spIcon(d.special)}<span class="mobile-hide-text">${d.special}</span></div></td>
       <td style="text-align:center">${d.sp_cost}</td>
-      <td><div style="display:flex;align-items:center;gap:8px"><div class="range-bar"><div class="range-bar-fill" style="width:${pct2}%;background:linear-gradient(90deg,${color}66,${color})"></div></div><span style="font-size:12px;white-space:nowrap">${rangeText}</span></div></td>
-      <td>${d.url?`<a href="${d.url}" target="_blank" class="link-icon">🔗</a>`:''}</td>`;
+      <td><div style="display:flex;align-items:center;gap:8px"><div class="range-bar"><div class="range-bar-fill" style="width:${pct2}%;background:linear-gradient(90deg,${color}66,${color})"></div></div><span class="range-detail">${rangeTextM} <span style="color:#aaa">(${rangeTextL}本)</span>${basisHint}</span><span class="mobile-range" style="display:none">${rangeTextM}</span></div></td>
+      <td>${d.url?`<a href="${d.url}" target="_blank" class="link-icon">\uD83D\uDD17</a>`:''}</td>`;
     tbody.appendChild(tr);
   });
 }
@@ -351,8 +393,8 @@ function renderCharts(){
   grid.appendChild(makeBarChart('サブウェポン分布',subCounts,()=>'#0099dd','sub'));
   const spCounts={};filtered.forEach(d=>spCounts[d.special]=(spCounts[d.special]||0)+1);
   grid.appendChild(makeBarChart('スペシャルウェポン分布',spCounts,()=>'#6c3ce6','special'));
-  const rangeBuckets={'〜10m':0,'10〜15m':0,'15〜20m':0,'20〜25m':0,'25m〜':0};
-  filtered.forEach(d=>{const r=d.range_max_m;if(r<=10)rangeBuckets['〜10m']++;else if(r<=15)rangeBuckets['10〜15m']++;else if(r<=20)rangeBuckets['15〜20m']++;else if(r<=25)rangeBuckets['20〜25m']++;else rangeBuckets['25m〜']++});
+  const rangeBuckets={'\u301C10m':0,'10\u301C15m':0,'15\u301C20m':0,'20\u301C25m':0,'25m\u301C':0};
+  filtered.forEach(d=>{const r=d.range_max_m;if(r<=10)rangeBuckets['\u301C10m']++;else if(r<=15)rangeBuckets['10\u301C15m']++;else if(r<=20)rangeBuckets['15\u301C20m']++;else if(r<=25)rangeBuckets['20\u301C25m']++;else rangeBuckets['25m\u301C']++});
   grid.appendChild(makeBarChart('射程分布',rangeBuckets,()=>'#e6007e','none'));
 }
 
