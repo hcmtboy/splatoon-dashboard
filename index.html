@@ -65,6 +65,25 @@ tr:hover{background:#f5f0ff}
 .range-hint{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#e0dff5;color:#413CB9;font-size:10px;font-weight:700;cursor:help;margin-left:4px;position:relative}
 .range-hint:hover::after{content:attr(data-tip);position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:4px 8px;border-radius:4px;font-size:11px;white-space:nowrap;z-index:10;font-weight:400}
 
+/* Detail panel */
+.detail-row td{padding:0!important;border-bottom:1px solid #eee}
+.detail-panel{background:#f8f7fc;padding:12px 16px;font-size:12px;color:#555;line-height:1.8;border-top:1px dashed #e0e0e0}
+.detail-panel .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 24px}
+.detail-panel .detail-label{color:#999;font-size:10px;text-transform:uppercase;letter-spacing:.5px}
+.detail-panel .detail-value{font-size:13px;color:#333;display:flex;align-items:center;gap:6px}
+.detail-panel .detail-value img{width:20px;height:20px;filter:brightness(0) opacity(.5)}
+.detail-panel .detail-memo{margin-top:6px;padding-top:6px;border-top:1px solid #e8e8e8;color:#888;font-size:11px}
+.detail-panel .detail-link{display:inline-block;margin-top:8px;color:#6c3ce6;text-decoration:none;font-size:12px;font-weight:600}
+.detail-panel .detail-link:hover{text-decoration:underline}
+tr.expanded{background:#f5f0ff}
+tr{cursor:pointer}
+@media(max-width:600px){
+  .detail-row{display:block!important;padding:0 12px 8px!important;border-bottom:1px solid #f0f0f0}
+  .detail-row td{display:block!important;width:100%!important}
+  .detail-panel{padding:10px 12px}
+  .detail-panel .detail-grid{grid-template-columns:1fr 1fr;gap:4px 16px}
+}
+
 /* Charts */
 .charts{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .chart-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
@@ -125,6 +144,7 @@ tr:hover{background:#f5f0ff}
   tr:hover{background:#f5f0ff}
   td{display:block;padding:0;border-bottom:none;font-size:12px}
   td:nth-child(1){display:none!important} /* hide type badge */
+  .detail-row td:nth-child(1){display:block!important;width:100%!important}
   td:nth-child(2){flex:1;min-width:0;overflow:hidden} /* weapon name */
   td:nth-child(2) .weapon-cell{gap:4px}
   td:nth-child(2) strong{font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -380,8 +400,39 @@ function renderTable(){
       <td style="text-align:center">${d.sp_cost}</td>
       <td><div style="display:flex;align-items:center;gap:8px"><div class="range-bar"><div class="range-bar-fill" style="width:${pct2}%;background:linear-gradient(90deg,${color}66,${color})"></div></div><span class="range-detail">${rangeTextM} <span style="color:#aaa">(${rangeTextL}本)</span>${basisHint}</span><span class="mobile-range" style="display:none">${rangeTextM}</span></div></td>
       <td>${d.url?`<a href="${d.url}" target="_blank" class="link-icon">\uD83D\uDD17</a>`:''}</td>`;
+    tr.onclick=(e)=>{if(e.target.closest('a'))return;toggleDetail(tr,d,color,maxRange)};
     tbody.appendChild(tr);
   });
+}
+
+function toggleDetail(tr,d,color,maxRange){
+  const existing=tr.nextElementSibling;
+  if(existing&&existing.classList.contains('detail-row')){
+    existing.remove();
+    tr.classList.remove('expanded');
+    return;
+  }
+  // Close any other open detail
+  document.querySelectorAll('.detail-row').forEach(r=>{r.previousElementSibling?.classList.remove('expanded');r.remove()});
+  tr.classList.add('expanded');
+  const detailTr=document.createElement('tr');
+  detailTr.className='detail-row';
+  const rangeM=d.range_min_m===d.range_max_m?`${d.range_min_m}m`:`${d.range_min_m}\u301C${d.range_max_m}m`;
+  const rangeL=d.range_min_line===d.range_max_line?`${d.range_min_line}\u672C`:`${d.range_min_line}\u301C${d.range_max_line}\u672C`;
+  const pct=(d.range_max_m/maxRange*100);
+  detailTr.innerHTML=`<td colspan="7"><div class="detail-panel">
+    <div class="detail-grid">
+      <div><div class="detail-label">\u5C5E\u6027</div><div class="detail-value"><span class="type-badge" style="background:${color}">${d.type}</span>${d.group||''}</div></div>
+      <div><div class="detail-label">SP\u5FC5\u8981P</div><div class="detail-value"><strong>${d.sp_cost}</strong>p</div></div>
+      <div><div class="detail-label">\u30B5\u30D6</div><div class="detail-value">${subIcon(d.sub)}${d.sub}</div></div>
+      <div><div class="detail-label">\u30B9\u30DA\u30B7\u30E3\u30EB</div><div class="detail-value">${spIcon(d.special)}${d.special}</div></div>
+      <div><div class="detail-label">\u5C04\u7A0B</div><div class="detail-value">${rangeM}\uFF08${rangeL}\uFF09</div></div>
+      <div><div class="detail-label">\u6BD4\u8F03\u57FA\u6E96</div><div class="detail-value">${d.range_basis||'\u2014'}</div></div>
+    </div>
+    ${d.range_memo?`<div class="detail-memo">\u203B ${d.range_memo}</div>`:''}
+    ${d.url?`<a class="detail-link" href="${d.url}" target="_blank">\u2192 Wiki\u3067\u8A73\u7D30\u3092\u898B\u308B</a>`:''}
+  </div></td>`;
+  tr.after(detailTr);
 }
 
 function applySort(){
