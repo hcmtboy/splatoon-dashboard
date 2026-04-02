@@ -29,9 +29,9 @@ body{font-family:'Segoe UI',sans-serif;background:#f0f2f5;color:#333;min-height:
 .filter-btn-all:hover{background:#e8eaef}
 .filter-btn-all.active{border-color:#6c3ce6;color:#6c3ce6;background:#f0ecfa}
 
-/* Sub/Special icon color: #413CB9 */
-.weapon-icon-sm{width:24px;height:24px;object-fit:contain;vertical-align:middle;filter:sepia(1) saturate(5) hue-rotate(220deg) brightness(.45)}
-.filter-btn img.sub-sp-icon{filter:sepia(1) saturate(5) hue-rotate(220deg) brightness(.45)}
+/* Sub/Special icon color: #413CB9 via SVG filter */
+.weapon-icon-sm{width:24px;height:24px;object-fit:contain;vertical-align:middle;filter:url(#icon-blue)}
+.filter-btn img.sub-sp-icon{filter:url(#icon-blue)}
 
 /* Search & view toggle bar */
 .toolbar{display:flex;gap:10px;padding:10px 24px;background:#fff;border-bottom:1px solid #e0e0e0;align-items:center;flex-wrap:wrap}
@@ -71,7 +71,7 @@ tr:hover{background:#f5f0ff}
 .chart-card h3{font-size:14px;color:#666;margin-bottom:12px;font-weight:600}
 .bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
 .bar-label{width:160px;font-size:12px;text-align:right;flex-shrink:0;display:flex;align-items:center;justify-content:flex-end;gap:6px;color:#555}
-.bar-label img{width:20px;height:20px;object-fit:contain;filter:sepia(1) saturate(5) hue-rotate(220deg) brightness(.45)}
+.bar-label img{width:20px;height:20px;object-fit:contain;filter:url(#icon-blue)}
 .bar-label .silhouette{width:20px;height:20px;object-fit:contain;filter:brightness(0) opacity(.6)}
 .bar{height:22px;border-radius:4px;position:relative;transition:width .3s;min-width:24px}
 .bar span{position:absolute;right:6px;top:2px;font-size:11px;color:#fff;font-weight:600}
@@ -147,6 +147,17 @@ tr:hover{background:#f5f0ff}
 </style>
 </head>
 <body>
+<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+  <filter id="icon-blue" color-interpolation-filters="sRGB">
+    <feColorMatrix type="saturate" values="0"/>
+    <feComponentTransfer>
+      <feFuncR type="table" tableValues="0.255 1"/>
+      <feFuncG type="table" tableValues="0.235 1"/>
+      <feFuncB type="table" tableValues="0.725 1"/>
+      <feFuncA type="identity"/>
+    </feComponentTransfer>
+  </filter>
+</svg>
 
 <div class="header">
   <div class="header-bg"></div>
